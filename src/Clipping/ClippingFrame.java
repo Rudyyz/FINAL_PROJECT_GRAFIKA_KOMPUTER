@@ -29,37 +29,37 @@ public class ClippingFrame extends JFrame {
         JPanel linePanel = new JPanel();
 
         linePanel.add(new JLabel("x1:"));
-        x1Field = new JTextField("50", 5);
+        x1Field = new JTextField(6);
         linePanel.add(x1Field);
 
         linePanel.add(new JLabel("y1:"));
-        y1Field = new JTextField("150", 5);
+        y1Field = new JTextField(6);
         linePanel.add(y1Field);
 
         linePanel.add(new JLabel("x2:"));
-        x2Field = new JTextField("750", 5);
+        x2Field = new JTextField(6);
         linePanel.add(x2Field);
 
         linePanel.add(new JLabel("y2:"));
-        y2Field = new JTextField("400", 5);
+        y2Field = new JTextField(6);
         linePanel.add(y2Field);
 
         JPanel clipPanel = new JPanel();
 
         clipPanel.add(new JLabel("xmin:"));
-        xminField = new JTextField("200", 5);
+        xminField = new JTextField(6);
         clipPanel.add(xminField);
 
         clipPanel.add(new JLabel("ymin:"));
-        yminField = new JTextField("100", 5);
+        yminField = new JTextField(6);
         clipPanel.add(yminField);
 
         clipPanel.add(new JLabel("xmax:"));
-        xmaxField = new JTextField("600", 5);
+        xmaxField = new JTextField(6);
         clipPanel.add(xmaxField);
 
         clipPanel.add(new JLabel("ymax:"));
-        ymaxField = new JTextField("450", 5);
+        ymaxField = new JTextField(6);
         clipPanel.add(ymaxField);
 
         JPanel buttonPanel = new JPanel();
@@ -111,17 +111,27 @@ public class ClippingFrame extends JFrame {
             );
 
             if (hasilClipping == null) {
-                JOptionPane.showMessageDialog(this, "Garis berada di luar area clipping");
+                JOptionPane.showMessageDialog(this, "Garis ditolak karena berada di luar area clipping");
             } else {
                 JOptionPane.showMessageDialog(this, "Garis berhasil dipotong / diterima");
             }
 
         } catch (NumberFormatException ex) {
-            JOptionPane.showMessageDialog(this, "Semua input harus berupa angka!");
+            JOptionPane.showMessageDialog(this, "Semua input harus diisi dengan angka!");
         }
     }
 
     private void clearCanvas() {
+        x1Field.setText("");
+        y1Field.setText("");
+        x2Field.setText("");
+        y2Field.setText("");
+
+        xminField.setText("");
+        yminField.setText("");
+        xmaxField.setText("");
+        ymaxField.setText("");
+
         clippingPanel.clearData();
     }
 }

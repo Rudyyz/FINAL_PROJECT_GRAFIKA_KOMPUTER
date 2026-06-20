@@ -1,15 +1,13 @@
-package Clipping;
+package Curve;
 
 import javax.swing.*;
 import java.awt.*;
 import java.text.DecimalFormat;
 
-public class ClippingPanel extends JPanel {
+public class CurvePanel extends JPanel {
 
-    private double x1, y1, x2, y2;
-    private double xmin, ymin, xmax, ymax;
-    private double[] hasilClipping;
-
+    private double[][] titikKontrol;
+    private double[][] titikCurve;
     private boolean adaData = false;
 
     private double minViewX, maxViewX, minViewY, maxViewY;
@@ -18,33 +16,21 @@ public class ClippingPanel extends JPanel {
 
     private DecimalFormat df = new DecimalFormat("#.##");
 
-    public ClippingPanel() {
+    public CurvePanel() {
         setBackground(Color.WHITE);
     }
 
-    public void setData(double x1, double y1, double x2, double y2,
-                        double xmin, double ymin, double xmax, double ymax,
-                        double[] hasilClipping) {
-
-        this.x1 = x1;
-        this.y1 = y1;
-        this.x2 = x2;
-        this.y2 = y2;
-
-        this.xmin = xmin;
-        this.ymin = ymin;
-        this.xmax = xmax;
-        this.ymax = ymax;
-
-        this.hasilClipping = hasilClipping;
+    public void setData(double[][] titikKontrol, double[][] titikCurve) {
+        this.titikKontrol = titikKontrol;
+        this.titikCurve = titikCurve;
         this.adaData = true;
-
         repaint();
     }
 
     public void clearData() {
-        adaData = false;
-        hasilClipping = null;
+        this.titikKontrol = null;
+        this.titikCurve = null;
+        this.adaData = false;
         repaint();
     }
 
@@ -57,7 +43,7 @@ public class ClippingPanel extends JPanel {
 
         if (!adaData) {
             g2.setColor(Color.BLACK);
-            g2.drawString("Masukkan input user lalu klik tombol Proses Clipping", 280, 250);
+            g2.drawString("Masukkan 4 titik kontrol lalu klik tombol Gambar Curve", 250, 250);
             return;
         }
 
@@ -65,76 +51,71 @@ public class ClippingPanel extends JPanel {
 
         gambarGridDanSumbu(g2);
 
-        // Keterangan warna
         g2.setColor(Color.BLACK);
-        g2.drawString("Merah = Garis sebelum clipping", 20, 25);
-        g2.drawString("Biru  = Area clipping", 20, 45);
-        g2.drawString("Hijau = Garis hasil clipping", 20, 65);
+        g2.drawString("Merah = Titik kontrol", 20, 25);
+        g2.drawString("Abu-abu = Garis bantu antar titik kontrol", 20, 45);
+        g2.drawString("Biru = Hasil Cubic Bezier Curve", 20, 65);
 
-        // Gambar kotak clipping
+        // Gambar garis bantu antar titik kontrol
+        g2.setColor(Color.GRAY);
+        g2.setStroke(new BasicStroke(1));
+
+        for (int i = 0; i < titikKontrol.length - 1; i++) {
+            g2.drawLine(
+                    toScreenX(titikKontrol[i][0]),
+                    toScreenY(titikKontrol[i][1]),
+                    toScreenX(titikKontrol[i + 1][0]),
+                    toScreenY(titikKontrol[i + 1][1])
+            );
+        }
+
+        // Gambar kurva Bezier
         g2.setColor(Color.BLUE);
-        g2.setStroke(new BasicStroke(2));
+        g2.setStroke(new BasicStroke(3));
 
-        int rectX = toScreenX(xmin);
-        int rectY = toScreenY(ymax);
-        int rectWidth = toScreenX(xmax) - toScreenX(xmin);
-        int rectHeight = toScreenY(ymin) - toScreenY(ymax);
+        for (int i = 0; i < titikCurve.length - 1; i++) {
+            g2.drawLine(
+                    toScreenX(titikCurve[i][0]),
+                    toScreenY(titikCurve[i][1]),
+                    toScreenX(titikCurve[i + 1][0]),
+                    toScreenY(titikCurve[i + 1][1])
+            );
+        }
 
-        g2.drawRect(rectX, rectY, rectWidth, rectHeight);
-        g2.drawString("Area Clipping", rectX, rectY - 10);
-
-        // Gambar garis awal
+        // Gambar titik kontrol
         g2.setColor(Color.RED);
         g2.setStroke(new BasicStroke(2));
-        g2.drawLine(toScreenX(x1), toScreenY(y1), toScreenX(x2), toScreenY(y2));
 
-        gambarTitik(g2, x1, y1, "A");
-        gambarTitik(g2, x2, y2, "B");
-
-        g2.drawString("Garis Awal", toScreenX(x1) + 5, toScreenY(y1) - 15);
-
-        // Gambar hasil clipping
-        if (hasilClipping != null) {
-            double cx1 = hasilClipping[0];
-            double cy1 = hasilClipping[1];
-            double cx2 = hasilClipping[2];
-            double cy2 = hasilClipping[3];
-
-            g2.setColor(Color.GREEN);
-            g2.setStroke(new BasicStroke(4));
-
-            g2.drawLine(toScreenX(cx1), toScreenY(cy1), toScreenX(cx2), toScreenY(cy2));
-
-            gambarTitik(g2, cx1, cy1, "P1");
-            gambarTitik(g2, cx2, cy2, "P2");
-
-            g2.setColor(Color.BLACK);
-            g2.drawString(
-                    "Hasil Clipping: P1(" + df.format(cx1) + "," + df.format(cy1) + ") dan P2(" +
-                            df.format(cx2) + "," + df.format(cy2) + ")",
-                    20,
-                    getHeight() - 25
-            );
-
-        } else {
-            g2.setColor(Color.BLACK);
-            g2.drawString("Garis ditolak karena berada di luar area clipping", 20, getHeight() - 25);
+        for (int i = 0; i < titikKontrol.length; i++) {
+            gambarTitik(g2, titikKontrol[i][0], titikKontrol[i][1], "P" + i);
         }
+
+        g2.setColor(Color.BLACK);
+        g2.drawString(
+                "Cubic Bezier Curve dihitung dari parameter t = 0 sampai t = 1",
+                20,
+                getHeight() - 25
+        );
     }
 
     private void hitungSkala() {
-        minViewX = Math.min(Math.min(x1, x2), xmin);
-        maxViewX = Math.max(Math.max(x1, x2), xmax);
+        minViewX = titikKontrol[0][0];
+        maxViewX = titikKontrol[0][0];
+        minViewY = titikKontrol[0][1];
+        maxViewY = titikKontrol[0][1];
 
-        minViewY = Math.min(Math.min(y1, y2), ymin);
-        maxViewY = Math.max(Math.max(y1, y2), ymax);
+        for (int i = 0; i < titikKontrol.length; i++) {
+            minViewX = Math.min(minViewX, titikKontrol[i][0]);
+            maxViewX = Math.max(maxViewX, titikKontrol[i][0]);
+            minViewY = Math.min(minViewY, titikKontrol[i][1]);
+            maxViewY = Math.max(maxViewY, titikKontrol[i][1]);
+        }
 
-        if (hasilClipping != null) {
-            minViewX = Math.min(minViewX, Math.min(hasilClipping[0], hasilClipping[2]));
-            maxViewX = Math.max(maxViewX, Math.max(hasilClipping[0], hasilClipping[2]));
-
-            minViewY = Math.min(minViewY, Math.min(hasilClipping[1], hasilClipping[3]));
-            maxViewY = Math.max(maxViewY, Math.max(hasilClipping[1], hasilClipping[3]));
+        for (int i = 0; i < titikCurve.length; i++) {
+            minViewX = Math.min(minViewX, titikCurve[i][0]);
+            maxViewX = Math.max(maxViewX, titikCurve[i][0]);
+            minViewY = Math.min(minViewY, titikCurve[i][1]);
+            maxViewY = Math.max(maxViewY, titikCurve[i][1]);
         }
 
         double rangeX = maxViewX - minViewX;
@@ -258,8 +239,10 @@ public class ClippingPanel extends JPanel {
             return 10;
         } else if (range <= 300) {
             return 20;
-        } else {
+        } else if (range <= 700) {
             return 50;
+        } else {
+            return 100;
         }
     }
 }
