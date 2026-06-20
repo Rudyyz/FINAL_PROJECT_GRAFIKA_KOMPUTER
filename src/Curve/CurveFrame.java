@@ -31,7 +31,7 @@ public class CurveFrame extends JFrame {
 
         JPanel p0p1Panel = new JPanel();
 
-        p0p1Panel.add(new JLabel("P0 x:"));
+        p0p1Panel.add(new JLabel("A: x:"));
         x0Field = new JTextField(6);
         p0p1Panel.add(x0Field);
 
@@ -39,7 +39,7 @@ public class CurveFrame extends JFrame {
         y0Field = new JTextField(6);
         p0p1Panel.add(y0Field);
 
-        p0p1Panel.add(new JLabel("P1 x:"));
+        p0p1Panel.add(new JLabel("B: x:"));
         x1Field = new JTextField(6);
         p0p1Panel.add(x1Field);
 
@@ -49,7 +49,7 @@ public class CurveFrame extends JFrame {
 
         JPanel p2p3Panel = new JPanel();
 
-        p2p3Panel.add(new JLabel("P2 x:"));
+        p2p3Panel.add(new JLabel("C: x:"));
         x2Field = new JTextField(6);
         p2p3Panel.add(x2Field);
 
@@ -57,7 +57,7 @@ public class CurveFrame extends JFrame {
         y2Field = new JTextField(6);
         p2p3Panel.add(y2Field);
 
-        p2p3Panel.add(new JLabel("P3 x:"));
+        p2p3Panel.add(new JLabel("D: x:"));
         x3Field = new JTextField(6);
         p2p3Panel.add(x3Field);
 
