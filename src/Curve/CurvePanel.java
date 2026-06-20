@@ -86,8 +86,10 @@ public class CurvePanel extends JPanel {
         g2.setColor(Color.RED);
         g2.setStroke(new BasicStroke(2));
 
+        String[] labelTitik = {"A", "B", "C", "D"};
+
         for (int i = 0; i < titikKontrol.length; i++) {
-            gambarTitik(g2, titikKontrol[i][0], titikKontrol[i][1], "P" + i);
+            gambarTitik(g2, titikKontrol[i][0], titikKontrol[i][1], labelTitik[i]);
         }
 
         g2.setColor(Color.BLACK);
