@@ -74,7 +74,7 @@ public class CurveFrame extends JFrame {
         buttonPanel.add(clearButton);
 
         JPanel infoPanel = new JPanel();
-        JLabel infoLabel = new JLabel("Input 4 titik kontrol: P0, P1, P2, P3");
+        JLabel infoLabel = new JLabel("Input 4 titik kontrol: A, B, C, D");
         infoPanel.add(infoLabel);
 
         inputPanel.add(titlePanel);
